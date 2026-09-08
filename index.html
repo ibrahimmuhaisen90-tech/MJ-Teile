@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <title>MJ Teile</title>
+  <style>
+    :root { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #0f172a; background: #f1f5f9; }
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: env(safe-area-inset-top) 16px env(safe-area-inset-bottom); }
+    main { max-width: 560px; margin: 0 auto; padding: 22px 0 42px; }
+    h1 { margin: 0; font-size: 30px; color: white; }
+    h2 { font-size: 19px; margin: 0 0 14px; }
+    header { background: #0f172a; border-radius: 22px; padding: 22px; margin-bottom: 16px; color: #cbd5e1; }
+    .card { background: white; border-radius: 18px; padding: 18px; margin: 14px 0; box-shadow: 0 3px 14px #0f172a10; }
+    label { display: block; font-size: 13px; font-weight: 650; color: #475569; margin: 12px 0 6px; }
+    input { width: 100%; border: 1px solid #cbd5e1; border-radius: 11px; padding: 12px; font-size: 17px; background: #fff; }
+    button { border: 0; border-radius: 11px; padding: 13px 15px; font-size: 16px; font-weight: 700; cursor: pointer; }
+    .primary { width: 100%; background: #2563eb; color: white; margin-top: 16px; }
+    .secondary { background: #e2e8f0; color: #0f172a; }
+    .danger { background: #fee2e2; color: #b91c1c; padding: 9px 11px; font-size: 13px; }
+    .summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .stat { background: #eff6ff; border-radius: 14px; padding: 13px; }
+    .stat small { display: block; color: #64748b; font-size: 12px; }
+    .stat strong { display: block; margin-top: 4px; font-size: 21px; }
+    .entry { border-top: 1px solid #e2e8f0; padding: 14px 0 0; margin-top: 14px; }
+    .entry:first-child { border-top: 0; margin-top: 0; }
+    .entry-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .entry-date { font-weight: 750; }
+    .muted { color: #64748b; font-size: 13px; margin-top: 4px; }
+    .money { color: #15803d; font-size: 18px; font-weight: 800; white-space: nowrap; }
+    .empty { color: #64748b; text-align: center; padding: 12px 0 2px; }
+  </style>
+</head>
+<body>
+<main>
+  <header><h1>MJ Teile</h1><div style="margin-top:6px">Arbeitsverdienst einfach erfassen</div></header>
+  <section class="card">
+    <h2>Arbeitstag hinzufügen</h2>
+    <label for="date">Datum</label><input id="date" type="date">
+    <label for="articles">Abgearbeitete Artikel</label><input id="articles" type="number" min="0" step="1" placeholder="z. B. 120">
+    <label for="rate">Euro pro Artikel</label><input id="rate" type="number" min="0" step="0.01" inputmode="decimal" placeholder="z. B. 0,35">
+    <label for="storage">Lagerung Euro (zusätzlich)</label><input id="storage" type="number" min="0" step="0.01" inputmode="decimal" placeholder="z. B. 15,00">
+    <button class="primary" id="save">Arbeitstag speichern</button>
+  </section>
+  <section class="card">
+    <h2>Übersicht</h2>
+    <div class="summary"><div class="stat"><small>Gesamtverdienst</small><strong id="total">0,00 €</strong></div><div class="stat"><small>Artikel gesamt</small><strong id="count">0</strong></div></div>
+  </section>
+  <section class="card"><h2>Arbeitstage</h2><div id="entries" class="empty">Noch keine Arbeitstage gespeichert.</div></section>
+</main>
+<script>
+  const key = 'mj-teile-entries';
+  const $ = id => document.getElementById(id);
+  const euros = n => Number(n).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
+  let entries = JSON.parse(localStorage.getItem(key) || '[]');
+  $('date').value = new Date().toISOString().slice(0, 10);
+  function render() {
+    const total = entries.reduce((s, e) => s + e.articles * e.rate + e.storage, 0);
+    $('total').textContent = euros(total);
+    $('count').textContent = entries.reduce((s, e) => s + e.articles, 0).toLocaleString('de-DE');
+    const box = $('entries');
+    if (!entries.length) { box.className = 'empty'; box.textContent = 'Noch keine Arbeitstage gespeichert.'; return; }
+    box.className = '';
+    box.innerHTML = entries.slice().sort((a,b) => b.date.localeCompare(a.date)).map(e => `
+      <div class="entry"><div class="entry-head"><div><div class="entry-date">${new Date(e.date+'T12:00:00').toLocaleDateString('de-DE')}</div><div class="muted">${e.articles.toLocaleString('de-DE')} Artikel × ${euros(e.rate)} · Lagerung ${euros(e.storage)}</div></div><div class="money">${euros(e.articles * e.rate + e.storage)}</div></div><div style="text-align:right;margin-top:10px"><button class="danger" data-id="${e.id}">Löschen</button></div></div>`).join('');
+    box.querySelectorAll('[data-id]').forEach(btn => btn.onclick = () => { entries = entries.filter(e => e.id !== btn.dataset.id); localStorage.setItem(key, JSON.stringify(entries)); render(); });
+  }
+  $('save').onclick = () => {
+    const date = $('date').value, articles = Number($('articles').value), rate = Number($('rate').value), storage = Number($('storage').value || 0);
+    if (!date || !Number.isFinite(articles) || articles < 0 || !Number.isFinite(rate) || rate < 0) { alert('Bitte Datum, Artikelanzahl und Euro pro Artikel ausfüllen.'); return; }
+    entries.push({ id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), date, articles, rate, storage });
+    localStorage.setItem(key, JSON.stringify(entries)); $('articles').value = ''; $('rate').value = ''; $('storage').value = ''; render();
+  };
+  render();
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+</script>
+</body>
+</html>
