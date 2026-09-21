@@ -1,0 +1,6 @@
+#app-info{max-width:1700px;margin:auto;padding:12px 20px;background:#e7f2ff;color:#173550;font-size:14px}
+#app-info details{padding:0;border:0}#app-info summary{min-height:44px;display:flex;align-items:center}#offline-status{display:block;margin-top:8px;font-size:12px}
+body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+main>*{min-width:0}input,textarea,select{font-size:16px}button,select{min-height:44px}button{touch-action:manipulation}select{max-width:100%}
+@media(max-width:1100px){main{display:grid!important;grid-template-columns:minmax(0,1fr)!important;padding:12px!important}.entry,.model-panel{padding:16px!important}.tabs{display:grid!important;grid-template-columns:1fr 1fr;gap:8px}.tabs button{min-width:0!important;font-size:14px!important}.model-actions{flex-wrap:wrap}.model-actions button{min-width:120px}.model-help-list{grid-template-columns:1fr!important}.toolbar{flex-wrap:wrap}header{padding:18px}#preview{height:600px}textarea{max-width:100%}#app-info{padding:12px 16px}.card{width:100%}.secondary{grid-template-columns:1fr 1fr}#code{max-width:100%}}
+@media(display-mode:standalone){#app-info summary{font-size:13px}}
