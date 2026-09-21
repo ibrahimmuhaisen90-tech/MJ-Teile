@@ -8,7 +8,7 @@
  };
  if(!('serviceWorker' in navigator)){status.textContent='Offline-Nutzung ist in diesem Browser nicht verfügbar.';return;}
  navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'}).then(async registration=>{
-  const offer=()=>{if(registration.waiting){update.hidden=false;update.onclick=()=>{registration.waiting.postMessage('ACTIVATE');};}};
+  const offer=()=>{update.hidden=!(registration.waiting&&registration.active);update.onclick=()=>{registration.waiting?.postMessage('ACTIVATE');};};
   offer();registration.addEventListener('updatefound',()=>{const worker=registration.installing;worker?.addEventListener('statechange',()=>{if(worker.state==='installed')offer();});});
   await navigator.serviceWorker.ready;
   const show=()=>{status.textContent=navigator.onLine?'Für Offline-Nutzung bereit · Daten auf diesem Gerät':'Offline · Daten auf diesem Gerät';};
