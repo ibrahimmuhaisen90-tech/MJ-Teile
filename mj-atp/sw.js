@@ -1,12 +1,5 @@
-const PREFIX='mj-atp-'+self.registration.scope, CACHE=PREFIX+'-01eca17e8b39';
-const FILES=["index.html","mobile.css","pwa.js","manifest.webmanifest","icon-180.png","icon-192.png","icon-512.png"];
-self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES))));
-self.addEventListener('message',e=>{if(e.data==='ACTIVATE')self.skipWaiting();});
-self.addEventListener('activate',e=>e.waitUntil((async()=>{for(const key of await caches.keys())if(key.startsWith(PREFIX)&&key!==CACHE)await caches.delete(key);await self.clients.claim();})()));
-self.addEventListener('fetch',e=>{
- if(e.request.method!=='GET'||!e.request.url.startsWith(self.registration.scope))return;
- const relative=new URL(e.request.url).pathname.slice(new URL(self.registration.scope).pathname.length);
- const file=e.request.mode==='navigate'?'index.html':relative;
- if(!FILES.includes(file))return;
- e.respondWith(caches.open(CACHE).then(async c=>(await c.match(new URL(file,self.registration.scope).href))||fetch(e.request)));
-});
+Get-Content: 
+Line |
+   2 |  Get-Content mj-atp/sw.js -Raw
+     |  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot find path 'C:\Users\Muhai\Documents\Codex\2026-09-08\https-chatgpt-com-share-6aa017e1-ade4\mj-atp\sw.js' because it does not exist.
