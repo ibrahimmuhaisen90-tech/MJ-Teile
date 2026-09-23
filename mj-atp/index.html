@@ -87,7 +87,7 @@ function refresh(){
  document.getElementById('progress').textContent = keys.filter(key => data[key]).length+' von 4 Feldern ausgefüllt';
  document.getElementById('code').value = render(data);
  clearTimeout(previewTimer);
- previewTimer = setTimeout(() => {document.getElementById('preview').srcdoc = '<!doctype html><html lang="de"><head><meta charset="utf-8"></head><body>'+render(data,true)+'<script>(()=>{const input=document.getElementById('modelcatalogfilter'),list=document.getElementById('modellist'),count=document.getElementById('modelcatalogcount');if(!input)return;function filter(){const q=window.mjNormalizeModelInput(input.value).toLocaleLowerCase('de');let n=0;for(const row of list.children){row.hidden=!row.textContent.toLocaleLowerCase('de').includes(q);if(!row.hidden)n++;}count.textContent=n+' von '+list.children.length+' Codes (einschließlich Such-Aliasse).';}input.addEventListener('input',filter);filter();})();</script></body></html>';},180);
+ previewTimer = setTimeout(() => {document.getElementById('preview').srcdoc = '<!doctype html><html lang="de"><head><meta charset="utf-8"></head><body>'+render(data,true)+'</body></html>';},180);
 }
 function valid(){
  for(const key of keys){fields[key].setCustomValidity(fields[key].value.trim() ? '' : 'Bitte dieses Feld ausfüllen.');}
@@ -249,6 +249,4 @@ $('chatuse').onclick=()=>{if(!confirm('Die bisherigen 99 Artikelplätze durch di
 $('chatnew').onclick=()=>{if(!confirm('Die aktuelle Chat-Sammlung leeren? Bereits übernommene Artikelplätze bleiben erhalten.'))return;state={target:99,records:[],pending:null,messages:[]};message('assistant','Wie viele Artikel möchtest du vorbereiten? Du kannst auch direkt den ersten Artikel senden.');draw();};
 if(!state.messages.length)message('assistant','Wie viele Artikel möchtest du vorbereiten? Sende z. B. „Ich möchte 7 Artikel vorbereiten“. Du kannst auch direkt den ersten Artikel eingeben. Mengen und Farbcodes speichere ich mit. Mengen sind nur Zusatzdaten in der Datei, kein Mengenfeld im HTML-Programm.');draw();
 })();
-</script></body>
-</html>
-
+</script><script>(()=>{const input=document.getElementById('modelcatalogfilter'),list=document.getElementById('modellist'),count=document.getElementById('modelcatalogcount');if(!input)return;function filter(){const q=window.mjNormalizeModelInput(input.value).toLocaleLowerCase('de');let n=0;for(const row of list.children){row.hidden=!row.textContent.toLocaleLowerCase('de').includes(q);if(!row.hidden)n++;}count.textContent=n+' von '+list.children.length+' Codes (einschließlich Such-Aliasse).';}input.addEventListener('input',filter);filter();})();</script></body></html>
