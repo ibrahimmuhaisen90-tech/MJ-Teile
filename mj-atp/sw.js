@@ -1,4 +1,4 @@
-const PREFIX='mj-atp-'+self.registration.scope, CACHE=PREFIX+'-7aab6a0151a6';
+const PREFIX='mj-atp-'+self.registration.scope, CACHE=PREFIX+'-04466aefc3bf';
 const FILES=["index.html","mobile.css","pwa.js","manifest.webmanifest","icon-180.png","icon-192.png","icon-512.png"];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES))));
 self.addEventListener('message',e=>{if(e.data==='ACTIVATE')self.skipWaiting();});
