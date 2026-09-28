@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#10243b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Teileprüfer">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="description" content="Mercedes-Teilenummern lokal verwalten und in den MJ-Autoteile-Shops prüfen.">
+  <title>MJ Teileprüfer</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" sizes="180x180" href="../mj-atp/icon-180.png">
+  <link rel="icon" type="image/png" href="../mj-atp/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-mark" aria-hidden="true">MJ</div>
+    <div><strong>MJ Teileprüfer</strong><span>Datenbank · eBay · Kleinanzeigen</span></div>
+    <span id="network" class="network" role="status">Online</span>
+  </header>
+
+  <main>
+    <section id="install-card" class="install-card">
+      <div><strong>Auf dem iPhone installieren</strong><p>In Safari auf <b>Teilen</b> und dann auf <b>Zum Home-Bildschirm</b> tippen.</p></div>
+      <button id="hide-install" class="icon-button" type="button" aria-label="Hinweis schließen">×</button>
+    </section>
+
+    <section class="panel database-panel">
+      <div class="panel-head">
+        <div><p class="eyebrow">Eigene Datenbank</p><h1>Teilelisten zusammenführen</h1></div>
+        <div id="database-count" class="count-pill">0 Nummern</div>
+      </div>
+      <p class="lead">Mehrere TXT-, CSV- oder TSV-Dateien hinzufügen. Erkannt werden Artikelnummern wie <code>A6012030075</code> – auch mit Leerzeichen oder Bindestrichen.</p>
+      <div class="button-grid">
+        <label class="button primary" for="files">Dateien hinzufügen</label>
+        <input id="files" type="file" accept=".txt,.csv,.tsv,text/plain,text/csv" multiple hidden>
+        <button id="backup" class="button secondary" type="button">Datenbank sichern</button>
+        <label class="button secondary" for="restore">Sicherung laden</label>
+        <input id="restore" type="file" accept=".json,application/json" hidden>
+        <button id="clear" class="button danger" type="button">Datenbank leeren</button>
+      </div>
+      <div id="source-list" class="source-list" aria-live="polite"><p class="empty">Noch keine Dateien hinzugefügt.</p></div>
+    </section>
+
+    <section class="panel search-panel">
+      <p class="eyebrow">Teilenummer prüfen</p>
+      <form id="search-form" novalidate>
+        <label for="part">Mercedes-Artikelnummer</label>
+        <div class="search-row">
+          <input id="part" type="search" inputmode="text" autocomplete="off" autocapitalize="characters" placeholder="A6012030075" maxlength="32">
+          <button class="button primary" type="submit">Prüfen</button>
+        </div>
+        <p id="search-help" class="help">A plus zehn Ziffern eingeben.</p>
+      </form>
+    </section>
+
+    <section id="results" class="results" hidden aria-live="polite">
+      <div class="result-title"><div><p class="eyebrow">Prüfergebnis</p><h2 id="result-part">—</h2></div><span id="overall" class="status-badge">—</span></div>
+
+      <article class="result-card">
+        <div class="source-icon database-icon" aria-hidden="true">DB</div>
+        <div class="result-copy"><h3>Eigene Datenbank</h3><p id="database-result">Noch nicht geprüft.</p><small id="database-files"></small></div>
+        <span id="database-status" class="source-status">—</span>
+      </article>
+
+      <article class="result-card">
+        <div class="source-icon ebay-icon" aria-hidden="true">e</div>
+        <div class="result-copy"><h3>eBay · mjteile100</h3><p>Öffnet die gefilterte Suche direkt beim angegebenen Verkäufer.</p></div>
+        <a id="ebay-link" class="shop-link" target="_blank" rel="noopener noreferrer">Bei eBay prüfen</a>
+      </article>
+
+      <article class="result-card">
+        <div class="source-icon klein-icon" aria-hidden="true">K</div>
+        <div class="result-copy"><h3>Kleinanzeigen · MJ Autoteile</h3><p>Die Nummer wird kopiert; danach im Profil-Suchfeld einfügen.</p></div>
+        <button id="klein-link" class="shop-link" type="button">Profil öffnen</button>
+      </article>
+    </section>
+
+    <p id="app-status" class="app-status" role="status">Bereit · Daten bleiben auf diesem Gerät.</p>
+  </main>
+</body>
+</html>
+
